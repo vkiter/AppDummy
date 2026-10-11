@@ -1,5 +1,5 @@
 # AppDummy v1 — G-APPDUMMY-V1
-Valeriy Khokhlov · NIA: XXXXXXX
+Valeriy Khokhlov · NIA: 10154580
 
 ## Qué hace
 Primera versión de AppDummy, una biblioteca personal hecha con Jetpack Compose.
