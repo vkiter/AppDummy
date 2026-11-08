@@ -9,6 +9,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -23,7 +24,10 @@ import edu.khokhlovvaleriy.appdummy.ui.theme.AppDummyTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaGestionPermisos(modifier: Modifier = Modifier) {
+fun PantallaGestionPermisos(
+    onVolver: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
 
 
@@ -49,7 +53,16 @@ fun PantallaGestionPermisos(modifier: Modifier = Modifier) {
 
     Scaffold(
         modifier = modifier,
-        topBar = { TopAppBar(title = { Text("Permisos de AppDummy") }) }
+        topBar = {
+            TopAppBar(
+                title = { Text("Permisos de AppDummy") },
+                navigationIcon = {
+                    IconButton(onClick = onVolver) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                    }
+                }
+            )
+        }
     ) { padding ->
         Column(
             modifier = Modifier
@@ -126,6 +139,6 @@ fun PantallaGestionPermisos(modifier: Modifier = Modifier) {
 @Composable
 fun PantallaGestionPermisosPreview() {
     AppDummyTheme {
-        PantallaGestionPermisos()
+        PantallaGestionPermisos(onVolver = { })
     }
 }
