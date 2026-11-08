@@ -147,7 +147,7 @@ fun PantallaListado(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun PantallaListadoPreview() {
+fun PantallaLisjuegojtadoPreview() {
     AppDummyTheme {
         PantallaListado()
     }
