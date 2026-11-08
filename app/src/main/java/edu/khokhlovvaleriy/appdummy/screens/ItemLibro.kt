@@ -1,11 +1,14 @@
 package edu.khokhlovvaleriy.appdummy.screens
 
+import android.content.Context
+import android.content.Intent
 import android.util.Patterns
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -15,18 +18,21 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import edu.khokhlovvaleriy.appdummy.R
-import edu.khokhlovvaleriy.appdummy.model.LibroUI
+import edu.khokhlovvaleriy.appdummy.data.model.Libro
 import edu.khokhlovvaleriy.appdummy.ui.theme.AppDummyTheme
 
+// ─── screens/ItemLibro.kt ───
+// Tarjeta de un libro. La usan el Listado y Favoritos.
 @Composable
 fun ItemLibro(
-    libro: LibroUI,
-    onToggleLeido: (Int) -> Unit,
-    onToggleFavorito: (Int) -> Unit,
-    onCompartir: (LibroUI) -> Unit,
+    libro: Libro,
+    onClick: () -> Unit,
+    onToggleLeido: () -> Unit,
+    onToggleFavorito: () -> Unit,
+    onCompartir: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(modifier = modifier.fillMaxWidth()) {
+    Card(onClick = onClick, modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -42,14 +48,18 @@ fun ItemLibro(
                         .build(),
                     contentDescription = "Portada de ${libro.titulo}",
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.width(200.dp)
+                    modifier = Modifier
+                        .width(200.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
-            else
+            else // Si no es una URL válida, se muestra una imagen por defecto
                 AsyncImage(
                     model = R.drawable.nocover,
                     contentDescription = "Portada de ${libro.titulo}",
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.width(200.dp)
+                    modifier = Modifier
+                        .width(200.dp)
+                        .align(Alignment.CenterHorizontally)
                 )
 
             Text(
@@ -58,12 +68,8 @@ fun ItemLibro(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-
             Row(modifier = Modifier.fillMaxWidth()) {
-                IconButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = { onToggleLeido(libro.id) }
-                ) {
+                IconButton(modifier = Modifier.weight(1f), onClick = onToggleLeido) {
                     Icon(
                         imageVector = if (libro.leido) Icons.Default.BookmarkAdded
                         else Icons.Default.BookmarkBorder,
@@ -72,10 +78,7 @@ fun ItemLibro(
                         else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                IconButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = { onToggleFavorito(libro.id) }
-                ) {
+                IconButton(modifier = Modifier.weight(1f), onClick = onToggleFavorito) {
                     Icon(
                         imageVector = if (libro.esFavorito) Icons.Default.Favorite
                         else Icons.Default.FavoriteBorder,
@@ -84,11 +87,7 @@ fun ItemLibro(
                         else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-
-                IconButton(
-                    modifier = Modifier.weight(1f),
-                    onClick = { onCompartir(libro) }
-                ) {
+                IconButton(modifier = Modifier.weight(1f), onClick = onCompartir) {
                     Icon(
                         imageVector = Icons.Default.Share,
                         contentDescription = "Compartir",
@@ -100,13 +99,22 @@ fun ItemLibro(
     }
 }
 
+// Intent implícito ACTION_SEND (Tema 1D). Lo usan el Listado y Favoritos.
+fun compartirLibro(context: Context, libro: Libro) {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, "Te recomiendo '${libro.titulo}' de ${libro.autor}")
+    }
+    context.startActivity(Intent.createChooser(intent, "Compartir con..."))
+}
 
 @Preview(showBackground = true)
 @Composable
 fun ItemLibroPreview() {
     AppDummyTheme {
         ItemLibro(
-            libro = LibroUI(1, "Proyecto Hail Mary", "Andy Weir", 2021, esFavorito = true),
+            libro = Libro(1, "Proyecto Hail Mary", "Andy Weir", 2021, esFavorito = true),
+            onClick = { },
             onToggleLeido = { },
             onToggleFavorito = { },
             onCompartir = { }
